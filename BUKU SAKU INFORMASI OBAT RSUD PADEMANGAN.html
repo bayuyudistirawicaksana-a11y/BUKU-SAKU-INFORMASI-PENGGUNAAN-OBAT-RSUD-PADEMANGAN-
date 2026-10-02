@@ -1,0 +1,55 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Buku Saku Penggunaan Obat — RSUD Pademangan</title>
+<style>
+*{box-sizing:border-box}html,body{margin:0;height:100%;font-family:Arial,Helvetica,sans-serif;background:#0b1730;color:#fff;overflow:hidden}
+body{display:flex;flex-direction:column}
+header{height:58px;display:flex;align-items:center;justify-content:space-between;padding:0 18px;background:linear-gradient(90deg,#073d78,#0c79a5);box-shadow:0 2px 12px #0006;z-index:5}
+.title{font-weight:700;font-size:16px}.sub{font-size:11px;opacity:.8;margin-top:2px}
+.actions{display:flex;gap:8px}.btn{border:0;border-radius:8px;background:#ffffff20;color:#fff;padding:9px 12px;cursor:pointer;font-weight:600}.btn:hover{background:#ffffff35}
+.stage{flex:1;display:flex;align-items:center;justify-content:center;padding:14px;position:relative}
+.book-wrap{width:min(92vw,1100px);height:min(86vh,780px);position:relative;display:flex;align-items:center;justify-content:center}
+.book{position:relative;height:100%;aspect-ratio:4/3;max-width:100%;perspective:2200px;filter:drop-shadow(0 16px 28px #0008)}
+.page{position:absolute;inset:0;background:#fff;transform-origin:left center;transform-style:preserve-3d;transition:transform .7s cubic-bezier(.2,.7,.2,1),z-index 0s .35s;overflow:hidden;border-radius:3px 10px 10px 3px}
+.page img{width:100%;height:100%;object-fit:contain;background:#fff;display:block;backface-visibility:hidden}
+.page.flipped{transform:rotateY(-180deg);z-index:1}
+.page .back{position:absolute;inset:0;transform:rotateY(180deg);backface-visibility:hidden;background:#fff;overflow:hidden}.page .back img{transform:scaleX(-1)}
+.page-shadow{position:absolute;inset:0;pointer-events:none;background:linear-gradient(90deg,#0002,transparent 9%,transparent 85%,#0001)}
+.nav{position:absolute;top:50%;transform:translateY(-50%);width:44px;height:70px;border:0;border-radius:12px;background:#ffffff22;color:#fff;font-size:34px;cursor:pointer;z-index:4}.nav:hover{background:#ffffff38}.prev{left:12px}.next{right:12px}
+.footer{height:48px;background:#071125;display:flex;align-items:center;justify-content:center;gap:14px;font-size:12px}.progress{width:min(300px,35vw);height:6px;border-radius:9px;background:#ffffff25;overflow:hidden}.bar{height:100%;width:0;background:#ffd54a;transition:width .3s}
+.hint{position:absolute;bottom:12px;left:50%;transform:translateX(-50%);font-size:11px;opacity:.55;white-space:nowrap}
+@media(max-width:700px){header{height:52px;padding:0 10px}.title{font-size:13px}.sub{display:none}.actions .btn.pdf{display:none}.stage{padding:8px}.book-wrap{width:94vw;height:78vh}.nav{width:38px;height:58px;font-size:28px}.footer{height:44px}.hint{display:none}}
+</style>
+</head>
+<body>
+<header>
+  <div><div class="title">Buku Saku Penggunaan Obat</div><div class="sub">Unit Farmasi — RSUD Pademangan</div></div>
+  <div class="actions"><button class="btn pdf" onclick="window.open('BUKU_Saku_Penggunaan_Obat_RSUD_Pademangan.pdf','_blank')">Buka PDF</button><button class="btn" onclick="toggleFull()">⛶</button></div>
+</header>
+<main class="stage">
+  <button class="nav prev" onclick="prev()" aria-label="Halaman sebelumnya">‹</button>
+  <div class="book-wrap"><div class="book" id="book"></div></div>
+  <button class="nav next" onclick="next()" aria-label="Halaman berikutnya">›</button>
+  <div class="hint">Klik sisi kiri/kanan buku atau gunakan tombol panah keyboard</div>
+</main>
+<footer><span id="counter">Halaman 1 dari 13</span><div class="progress"><div class="bar" id="bar"></div></div></footer>
+<script>
+const total=13; let current=0; const book=document.getElementById('book');
+for(let i=1;i<=total;i++){
+  const p=document.createElement('div'); p.className='page'; p.dataset.n=i; p.style.zIndex=total-i+1;
+  const img=document.createElement('img'); img.src=`pages/page-${String(i).padStart(2,'0')}.png`; img.alt=`Halaman ${i}`; p.appendChild(img);
+  const sh=document.createElement('div'); sh.className='page-shadow'; p.appendChild(sh); book.appendChild(p);
+}
+const pages=[...document.querySelectorAll('.page')];
+function render(){pages.forEach((p,i)=>{p.classList.toggle('flipped',i<current);p.style.zIndex=i<current?i+1:total-i});document.getElementById('counter').textContent=`Halaman ${Math.min(current+1,total)} dari ${total}`;document.getElementById('bar').style.width=((Math.min(current,total-1)/(total-1))*100)+'%'}
+function next(){if(current<total-1){current++;render()}}
+function prev(){if(current>0){current--;render()}}
+document.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='PageDown')next();if(e.key==='ArrowLeft'||e.key==='PageUp')prev()});
+book.addEventListener('click',e=>{const r=book.getBoundingClientRect(); if(e.clientX-r.left<r.width/2)prev();else next()});
+function toggleFull(){if(!document.fullscreenElement)document.documentElement.requestFullscreen();else document.exitFullscreen()}
+render();
+</script>
+</body></html>
